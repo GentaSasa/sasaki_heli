@@ -1,9 +1,9 @@
-%3つの軸について状態空間表現、連続状態から離散化させるためのプログラム
+%3つの軸について状態空間表現、連続状態から離散化、MPCの初期設定をするプログラム
 
 %状態空間モデルの作成
-ss_e = ss();%elevetion
-ss_t = ss();%travel
-ss_p = ss();%pitch
+ss_e = ss(A_e,B_e,C_e,D_e);%elevetion
+ss_t = ss(A_t,B_t,C_t,D_t);%travel
+ss_p = ss(A_p,B_p,C_p,D_p);%pitch
 
 %連続2離散
 plant_e = c2d(ss_e,ts);
@@ -13,15 +13,15 @@ plant_p = c2d(ss_p,ts);
 %計測される外乱(md)の追加
 sys_e = rss(2,2,3);
 sys_e.D = [0 0 0;0 0 0];
-sys_e.A = A_elev;
-sys_e.B = [B_elev,X1_elev];
+sys_e.A = A_e;
+sys_e.B = [B_e,X1_elev];
 sys_e.C = [1 0;0 1];
 
 sys_t = rss(2,2,3);
 sys_t.D = [0 0 0;0 0 0];
-sys_t.A = A_travel;
-sys_t.B = [B_travel,X1_travel];
-sys_t.C = C_travel;
+sys_t.A = A_t;
+sys_t.B = [B_t,X1_travel];
+sys_t.C = C_t;
 
 setp_e = setmpcsignals(sys_e,'MV',[1 2],'MD',3);
 setp_t = setmpcsignals(sys_t,'MV',[1 2],'MD',3);
@@ -29,14 +29,14 @@ setp_t = setmpcsignals(sys_t,'MV',[1 2],'MD',3);
 % mpc_object
 
 %mpc_object elevetion
-mpc_e = mpc(setp_e,ts_e);
+mpc_e = mpc(setp_e,ts_elev);
 %horizon
 mpc_e.PredictionHorizon = 15;
 mpc_e.ControlHorizon = 5;
 %nominal
 mpc_e.Model.Nominal.U = [0;0;0];
 mpc_e.Model.Nominal.Y = [elev_min;0];
-%limit
+%limitdisp('load parameter');
 %u_sum_limit
 mpc_e.MV(1).Min = u_sum_min;
 mpc_e.MV(1).Max = u_sum_max;
@@ -48,7 +48,7 @@ mpcelev.OV(1).Min = elev_min;
 mpcelev.OV(1).Max = elev_max;
 
 %mpc_object travel
-mpc_t = mpc(setp_t,ts_t);
+mpc_t = mpc(setp_t,ts_travel);
 %horizon
 mpc_t.PredictionHorizon = 80;
 mpc_t.ControlHorizon = 4;
@@ -60,7 +60,7 @@ mpc_t.MV(1).Min = pitch_min;
 mpc_t.MV(1).Max = pitch_max;
 
 %mpc_object pitch  (sampling rate is equal to travel axis)
-mpc_p = mpc(plant_p,ts_t);
+mpc_p = mpc(plant_p,ts_travel);
 %horizon
 mpc_p.PredictionHorizon = 80;
 mpc_p.ControlHorizon = 4;

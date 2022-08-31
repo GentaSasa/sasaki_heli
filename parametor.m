@@ -17,3 +17,21 @@ D_e = [0 0;0 0];
 D_t = [0 0;0 0];
 
 
+elev_max
+elev_min
+end_time
+filename
+pitch_max
+pitch_min
+t
+ts
+ts_elev
+ts_travel
+u_diff_max
+u_diff_min
+u_sum_max
+u_sum_min
+X1_elev
+X1_travel
+X3_target_angle
+X3_target_angle

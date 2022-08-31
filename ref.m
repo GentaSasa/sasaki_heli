@@ -1,6 +1,6 @@
 %set time (start:delta_t:end)
-t_elev = (0:ts_e:end_time);
-t_travel = (0:ts_t:end_time);
+t_elev = (0:ts_elev:end_time);
+t_travel = (0:ts_travel:end_time);
 
 %elevation
 x3_ref = zeros(length(t_elev),2);
