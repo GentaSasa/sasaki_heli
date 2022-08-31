@@ -11,7 +11,7 @@ disp('load ss_c2d_mpc');
 ss_c2d_mpc
 
 disp('load simulink');
-open_system('heli_model.slx')
+%open_system('heli_model')
 
 disp('start simulink');
 %sim('heli_model.slx')
